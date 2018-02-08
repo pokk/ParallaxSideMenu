@@ -8,9 +8,11 @@ import com.devrapid.kotlinknifer.navigationBarHeiht
 
 /**
  * @author  jieyi
- * @since   2/8/18
+ * @since   02/08/18
  */
-class ParallaxMain @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+open class ParallaxMain @JvmOverloads constructor(context: Context,
+                                                  attrs: AttributeSet? = null,
+                                                  defStyleAttr: Int = 0) :
     ViewGroup(context, attrs, defStyleAttr) {
     var realActivity: View? = null
         set(value) {

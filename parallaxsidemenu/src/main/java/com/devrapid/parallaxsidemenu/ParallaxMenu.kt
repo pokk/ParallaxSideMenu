@@ -3,7 +3,6 @@ package com.devrapid.parallaxsidemenu
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
@@ -29,12 +28,11 @@ import kotlinx.android.synthetic.main.menu_left_side.view.tv_name
 
 /**
  * @author  jieyi
- * @since   2/8/18
+ * @since   02/08/18
  */
-@SuppressLint("CheckResult")
-class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    FrameLayout(context, attrs, defStyleAttr) {
-
+open class ParallaxMenu @JvmOverloads constructor(context: Context,
+                                                  attrs: AttributeSet? = null,
+                                                  defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     //region Customize variable
     var menuAlphaDuration = 450L
     var menuAlphaDelay = 150L
