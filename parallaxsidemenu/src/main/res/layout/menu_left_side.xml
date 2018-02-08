@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageButton
         android:id="@+id/ib_close"
@@ -14,7 +15,7 @@
         android:background="?android:selectableItemBackgroundBorderless"
         android:cropToPadding="true"
         android:padding="16dp"
-        android:src="@drawable/ic_clear"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -23,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
+        tools:src="@android:drawable/star_big_on"
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -31,10 +33,9 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:text="Jieyi Wu"
+        tools:text="Your Name"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
         app:layout_constraintEnd_toStartOf="@+id/iv_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_icon"/>

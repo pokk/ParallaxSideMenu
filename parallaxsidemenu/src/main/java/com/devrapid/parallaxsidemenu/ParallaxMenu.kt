@@ -8,7 +8,10 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -32,6 +35,7 @@ import kotlinx.android.synthetic.main.menu_left_side.view.tv_name
 class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
 
+    //region Customize variable
     var menuAlphaDuration = 450L
     var menuAlphaDelay = 150L
     var animDuration = 600L
@@ -39,9 +43,12 @@ class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     var isOpenMenu = false
         private set
+    //endregion
 
+    //region Private variable
     private lateinit var activity: Activity
     private lateinit var decorView: ViewGroup
+    /* The main menu (the front activity) */
     private lateinit var mainView: ViewGroup
 
     private val ibClose by lazy { menuLayoutView.ib_close }
@@ -50,6 +57,7 @@ class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeS
     private val rvMenuHolder by lazy { menuLayoutView.rv_menu }
     private val menuLayoutView = LayoutInflater.from(context).inflate(R.layout.menu_left_side, this)
     private val linearLayoutManager by lazy { LinearLayoutManager(context) }
+
     private val openMenuAnim by lazy {
         AnimatorSet().apply {
             playTogether(ObjectAnimator.ofFloat(this@ParallaxMenu, "translationX", (-measuredWidth).toFloat(), 0f)
@@ -99,22 +107,25 @@ class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeS
     private val openMenu by lazy {
         AnimatorSet().apply {
             playTogether(openActivityAnim, openMenuAnim)
-            addListener(animatorListener { onAnimationStart { isOpenMenu = true } })
+            addListener(animatorListener { onAnimationEnd { isOpenMenu = true } })
         }
     }
     private val closeMenu by lazy {
         AnimatorSet().apply {
             playTogether(closeActivityAnim, closeMenuAnim)
-            addListener(animatorListener { onAnimationStart { isOpenMenu = false } })
+            addListener(animatorListener { onAnimationEnd { isOpenMenu = false } })
         }
     }
     private val menuItems by lazy { mutableListOf<SparseArray<Any>>() }
+    //endregion
 
     init {
+        // This is using RxJava.
 //        ibClose.clicks()
 //            .debounce(200, TimeUnit.MILLISECONDS)
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe { closeMenu() }
+        ibClose.setOnClickListener { closeMenu() }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -126,6 +137,8 @@ class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeS
     fun attachToActivity(activity: Activity) {
         this.activity = activity
         decorView = activity.window.decorView as ViewGroup
+        // Set the same background
+        decorView.background = background
         // Set the first view from the activity into a new view group (showing view).
         mainView = ParallaxMain(context).apply {
             // Get the activity's first view.
@@ -210,12 +223,23 @@ class ParallaxMenu @JvmOverloads constructor(context: Context, attrs: AttributeS
         }.start()
     }
 
+    fun setBackground(@ColorInt color: Int) {
+        setBackgroundColor(color)
+        if (::decorView.isInitialized) decorView.background = background
+    }
+
+    fun setBackgroundColorRes(@ColorRes colorId: Int) = setBackground(ContextCompat.getColor(context, colorId))
+
+    fun setBackgroundDrawableRes(@DrawableRes drawableId: Int) {
+        background = ContextCompat.getDrawable(context, drawableId)
+        if (::decorView.isInitialized) decorView.background = background
+    }
+
     fun setName(name: String) {
         tvName.text = name
     }
 
-    fun setIcon(uri: String) {
-    }
+    fun setIcon(uri: String) {}
 
     fun setIcon(@DrawableRes resId: Int) = ivIcon.setImageResource(resId)
 
