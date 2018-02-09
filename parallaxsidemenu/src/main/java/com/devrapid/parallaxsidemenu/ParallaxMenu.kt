@@ -6,9 +6,8 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
-import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -20,7 +19,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.devrapid.kotlinknifer.animatorListener
+import com.devrapid.kotlinknifer.isNotNull
+import com.devrapid.kotlinknifer.isNull
+import com.devrapid.parallaxsidemenu.ParallaxConst.INDEX_CURRENT_MENU_FLAG
+import com.devrapid.parallaxsidemenu.ParallaxConst.INDEX_NAME
 import kotlinx.android.synthetic.main.menu_left_side.view.ib_close
 import kotlinx.android.synthetic.main.menu_left_side.view.iv_icon
 import kotlinx.android.synthetic.main.menu_left_side.view.rv_menu
@@ -38,6 +42,14 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     var menuAlphaDelay = 150L
     var animDuration = 600L
     var animInterpolator = DecelerateInterpolator(3f)
+
+    var bkgDrawableRes = -1
+    var bkgColor = -1
+    var bkgColorRes = 0
+        set(value) {
+            field = value
+            bkgColor = ContextCompat.getColor(context, value)
+        }
 
     var isOpenMenu = false
         private set
@@ -136,7 +148,10 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
         this.activity = activity
         decorView = activity.window.decorView as ViewGroup
         // Set the same background
-        decorView.background = background
+        when {
+            0 < bkgColor -> decorView.setBackgroundColor(bkgColor)
+            0 < bkgDrawableRes -> decorView.background = ContextCompat.getDrawable(context, bkgDrawableRes)
+        }
         // Set the first view from the activity into a new view group (showing view).
         mainView = ParallaxMain(context).apply {
             // Get the activity's first view.
@@ -171,19 +186,18 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
 
         override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
             // Set the listener for changing the menu button text color.
-//            if (menuItems[position][Int.MIN_VALUE].isNull()) menuItems[position].append(Int.MIN_VALUE, { index: Int ->
-//                (holder.menu as TextView).textColor = holder.menu.getResColor(if (index == position) R.color.textColorPrimary else R.color.colorAccent)
-//            })
-//
-//            ((holder.menu as TextView) to menuItems[position]).apply {
-//                first.text = second[INDEX_NAME].toString()
-//                // Check init menu text variable.
-//                if (second[INDEX_CURRENT_MENU_FLAG].isNotNull()) {
-//                    // The item position is matched, then set the clicked color.
-//                    if (position == (second[INDEX_CURRENT_MENU_FLAG] as Int)) first.textColor = first.getResColor(R.color.textColorPrimary)
-//                    // Remove the initial flag.
-//                    second.remove(INDEX_CURRENT_MENU_FLAG)
-//                }
+            if (menuItems[position][Int.MIN_VALUE].isNull()) menuItems[position].append(Int.MIN_VALUE, { index: Int ->
+                (holder.menu as TextView).setTextColor(if (index == position) Color.GRAY else Color.BLACK)
+            })
+            ((holder.menu as TextView) to menuItems[position]).apply {
+                first.text = second[INDEX_NAME].toString()
+                // Check init menu text variable.
+                if (second[INDEX_CURRENT_MENU_FLAG].isNotNull()) {
+                    // The item position is matched, then set the clicked color.
+                    if (position == (second[INDEX_CURRENT_MENU_FLAG] as Int)) first.setTextColor(Color.GRAY)
+                    // Remove the initial flag.
+                    second.remove(INDEX_CURRENT_MENU_FLAG)
+                }
 //                first.clicks()
 //                    .debounce(200, TimeUnit.MILLISECONDS)
 //                    .doAfterNext {
@@ -198,7 +212,7 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
 //                        if (second[INDEX_CLICK_LISTENER].isNotNull())
 //                            (second[INDEX_CLICK_LISTENER] as (View) -> Unit).invoke(first)
 //                    }
-//            }
+            }
         }
     }
 
@@ -219,18 +233,6 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
                 })
             }
         }.start()
-    }
-
-    fun setBackground(@ColorInt color: Int) {
-        setBackgroundColor(color)
-        if (::decorView.isInitialized) decorView.background = background
-    }
-
-    fun setBackgroundColorRes(@ColorRes colorId: Int) = setBackground(ContextCompat.getColor(context, colorId))
-
-    fun setBackgroundDrawableRes(@DrawableRes drawableId: Int) {
-        background = ContextCompat.getDrawable(context, drawableId)
-        if (::decorView.isInitialized) decorView.background = background
     }
 
     fun setName(name: String) {
