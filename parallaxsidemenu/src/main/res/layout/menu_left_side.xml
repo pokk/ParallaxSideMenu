@@ -2,9 +2,9 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <ImageButton
         android:id="@+id/ib_close"
@@ -24,10 +24,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        tools:src="@android:drawable/star_big_on"
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@android:drawable/star_big_on"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -35,13 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:gravity="center"
-        tools:text="Your Name"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
         app:layout_constraintEnd_toStartOf="@+id/iv_icon"
-        app:layout_constraintTop_toTopOf="@+id/iv_icon"/>
+        app:layout_constraintTop_toTopOf="@+id/iv_icon"
+        tools:text="Your Name"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_menu"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:layout_marginBottom="56dp"
@@ -49,5 +48,12 @@
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ib_close"/>
+        app:layout_constraintTop_toBottomOf="@+id/ib_close">
+
+        <LinearLayout
+            android:id="@+id/ll_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"/>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.constraint.ConstraintLayout>

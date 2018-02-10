@@ -6,12 +6,9 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.LayoutInflater
@@ -22,12 +19,9 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.devrapid.kotlinknifer.animatorListener
 import com.devrapid.kotlinknifer.isNotNull
-import com.devrapid.kotlinknifer.isNull
-import com.devrapid.parallaxsidemenu.ParallaxConst.INDEX_CURRENT_MENU_FLAG
-import com.devrapid.parallaxsidemenu.ParallaxConst.INDEX_NAME
 import kotlinx.android.synthetic.main.menu_left_side.view.ib_close
 import kotlinx.android.synthetic.main.menu_left_side.view.iv_icon
-import kotlinx.android.synthetic.main.menu_left_side.view.rv_menu
+import kotlinx.android.synthetic.main.menu_left_side.view.ll_menu
 import kotlinx.android.synthetic.main.menu_left_side.view.tv_name
 
 /**
@@ -64,9 +58,8 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     private val ibClose by lazy { menuLayoutView.ib_close }
     private val ivIcon by lazy { menuLayoutView.iv_icon }
     private val tvName by lazy { menuLayoutView.tv_name }
-    private val rvMenuHolder by lazy { menuLayoutView.rv_menu }
+    private val rvMenuHolder by lazy { menuLayoutView.ll_menu }
     private val menuLayoutView = LayoutInflater.from(context).inflate(R.layout.menu_left_side, this)
-    private val linearLayoutManager by lazy { LinearLayoutManager(context) }
 
     private val openMenuAnim by lazy {
         AnimatorSet().apply {
@@ -130,11 +123,12 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     //endregion
 
     init {
-        // This is using RxJava.
+        //region This is using RxJava.
 //        ibClose.clicks()
 //            .debounce(200, TimeUnit.MILLISECONDS)
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe { closeMenu() }
+        //endregion
         ibClose.setOnClickListener { closeMenu() }
     }
 
@@ -164,55 +158,13 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
         decorView.addView(mainView)
         // Insert the menu view into basic view group for hiding itself.
         decorView.addView(this, 0)
-
-        setOverlapMenuElements(menuItems)
     }
 
-    fun setOverlapMenuElements(list: List<SparseArray<Any>>) {
-        rvMenuHolder.apply {
-            layoutManager = linearLayoutManager
-            adapter = MenuRecyclerView(list)
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    class MenuRecyclerView(private val menuItems: List<SparseArray<Any>>) : RecyclerView.Adapter<MenuRecyclerView.MenuViewHolder>() {
-        class MenuViewHolder(var menu: View) : RecyclerView.ViewHolder(menu)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            MenuViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.menu_item, parent, false))
-
-        override fun getItemCount() = menuItems.size
-
-        override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
-            // Set the listener for changing the menu button text color.
-            if (menuItems[position][Int.MIN_VALUE].isNull()) menuItems[position].append(Int.MIN_VALUE, { index: Int ->
-                (holder.menu as TextView).setTextColor(if (index == position) Color.GRAY else Color.BLACK)
-            })
-            ((holder.menu as TextView) to menuItems[position]).apply {
-                first.text = second[INDEX_NAME].toString()
-                // Check init menu text variable.
-                if (second[INDEX_CURRENT_MENU_FLAG].isNotNull()) {
-                    // The item position is matched, then set the clicked color.
-                    if (position == (second[INDEX_CURRENT_MENU_FLAG] as Int)) first.setTextColor(Color.GRAY)
-                    // Remove the initial flag.
-                    second.remove(INDEX_CURRENT_MENU_FLAG)
-                }
-//                first.clicks()
-//                    .debounce(200, TimeUnit.MILLISECONDS)
-//                    .doAfterNext {
-//                        // Notify other menu items, which position I clicked.
-//                        menuItems.forEach {
-//                            ui { it[Int.MIN_VALUE].takeIf { it.isNotNull() }?.let { (it as (Int) -> Unit)(position) } }
-//                        }
-//                    }
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe {
-//                        // Transfer to the other activity.
-//                        if (second[INDEX_CLICK_LISTENER].isNotNull())
-//                            (second[INDEX_CLICK_LISTENER] as (View) -> Unit).invoke(first)
-//                    }
-            }
+    fun setOverlapMenuElements(list: List<TextView>) {
+        list.forEach {
+            // Removed itself from the parent group view.
+            if (it.parent.isNotNull()) (it.parent as ViewGroup).removeView(it)
+            rvMenuHolder.addView(it)
         }
     }
 
