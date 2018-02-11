@@ -1,16 +1,46 @@
 package com.devrapid.sample
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
+import com.devrapid.kotlinknifer.getResColor
 import com.devrapid.parallaxsidemenu.ParallaxMenu
 import com.devrapid.parallaxsidemenu.R
-import kotlinx.android.synthetic.main.activity_main.btn
 import kotlinx.android.synthetic.main.activity_main.ib_menu
 
 class MainActivity : AppCompatActivity() {
     private val menu by lazy { ParallaxMenu(this) }
+    private val list by lazy {
+        listOf(
+            createMenu {
+                text = "Foo"
+                setOnClickListener(::clickListener)
+            },
+            createMenu {
+                text = "Hello"
+                setOnClickListener(::clickListener)
+            },
+            createMenu {
+                text = "Test"
+                setOnClickListener(::clickListener)
+            },
+            createMenu {
+                text = "Jieyi"
+                setOnClickListener(::clickListener)
+            },
+            createMenu {
+                text = "World"
+                setOnClickListener(::clickListener)
+            },
+            createMenu {
+                text = "Bye Bye"
+                setOnClickListener(::clickListener)
+            })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -18,17 +48,9 @@ class MainActivity : AppCompatActivity() {
         menu.apply {
             bkgDrawableRes = R.drawable.bkg_gradient_1
             attachToActivity(this@MainActivity)
-            setOverlapMenuElements(listOf(createMenu { text = "Foo" },
-                                          createMenu { text = "Hello" },
-                                          createMenu { text = "Test" },
-                                          createMenu { text = "Jieyi" },
-                                          createMenu { text = "World" },
-                                          createMenu { text = "Bye Bye" }))
+            setOverlapMenuElements(list)
         }
 
-        btn.setOnClickListener {
-            menu.openMenu()
-        }
         ib_menu.setOnClickListener {
             menu.openMenu()
         }
@@ -36,4 +58,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun createMenu(block: TextView.() -> Unit) =
         (LayoutInflater.from(this).inflate(R.layout.part_menu_item, null) as TextView).apply(block)
+
+    private fun clickListener(v: View) {
+        v as TextView
+        list.forEach {
+            v.setTextColor(if (it != v) this@MainActivity.getResColor(R.color.colorText) else Color.WHITE)
+        }
+    }
 }
