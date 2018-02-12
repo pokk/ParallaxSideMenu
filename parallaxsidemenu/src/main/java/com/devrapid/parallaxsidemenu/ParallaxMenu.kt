@@ -5,9 +5,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.SparseArray
@@ -36,6 +33,8 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     var menuAlphaDelay = 150L
     var animDuration = 600L
     var animInterpolator = DecelerateInterpolator(3f)
+    var shiftX = .5f
+    var shiftY = .1f
 
     var bkgDrawableRes = -1
     var bkgColor = -1
@@ -47,6 +46,9 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
 
     var isOpenMenu = false
         private set
+    val closeButton by lazy { menuLayoutView.ib_close }
+    val imageIcon by lazy { menuLayoutView.iv_icon }
+    val nameTextView by lazy { menuLayoutView.tv_name }
     //endregion
 
     //region Private variable
@@ -55,9 +57,6 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     /* The main menu (the front activity) */
     private lateinit var mainView: ViewGroup
 
-    private val ibClose by lazy { menuLayoutView.ib_close }
-    private val ivIcon by lazy { menuLayoutView.iv_icon }
-    private val tvName by lazy { menuLayoutView.tv_name }
     private val rvMenuHolder by lazy { menuLayoutView.ll_menu }
     private val menuLayoutView = LayoutInflater.from(context).inflate(R.layout.menu_left_side, this)
 
@@ -81,13 +80,13 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     }
     private val openActivityAnim by lazy {
         AnimatorSet().apply {
-            playTogether(ObjectAnimator.ofFloat(mainView, "translationX", 0f, (mainView.measuredWidth / 3).toFloat()),
-                         ObjectAnimator.ofFloat(mainView, "translationY", 0f, 250f))
+            playTogether(ObjectAnimator.ofFloat(mainView, "translationX", 0f, mainView.measuredWidth * shiftX),
+                         ObjectAnimator.ofFloat(mainView, "translationY", 0f, mainView.measuredHeight * shiftY))
             addListener(animatorListener {
                 onAnimationEnd {
                     mainView.apply {
-                        x = (mainView.measuredWidth / 3).toFloat()
-                        y = 250f
+                        x = mainView.measuredWidth * shiftX
+                        y = mainView.measuredHeight * shiftY
                     }
                 }
             })
@@ -95,8 +94,8 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     }
     private val closeActivityAnim by lazy {
         AnimatorSet().apply {
-            playTogether(ObjectAnimator.ofFloat(mainView, "translationX", (mainView.measuredWidth / 3).toFloat(), 0f),
-                         ObjectAnimator.ofFloat(mainView, "translationY", 250f, 0f))
+            playTogether(ObjectAnimator.ofFloat(mainView, "translationX", mainView.measuredWidth * shiftX, 0f),
+                         ObjectAnimator.ofFloat(mainView, "translationY", mainView.measuredHeight * shiftY, 0f))
             addListener(animatorListener {
                 onAnimationEnd {
                     mainView.apply {
@@ -124,12 +123,12 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
 
     init {
         //region This is using RxJava.
-//        ibClose.clicks()
+//        closeButton.clicks()
 //            .debounce(200, TimeUnit.MILLISECONDS)
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe { closeMenu() }
         //endregion
-        ibClose.setOnClickListener { closeMenu() }
+        closeButton.setOnClickListener { closeMenu() }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -186,26 +185,6 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
             }
         }.start()
     }
-
-    fun setName(name: String) {
-        tvName.text = name
-    }
-
-    fun setIcon(uri: String) {}
-
-    fun setIcon(@DrawableRes resId: Int) = ivIcon.setImageResource(resId)
-
-    fun setIcon(bitmap: Bitmap) = ivIcon.setImageBitmap(bitmap)
-
-    fun setIcon(drawable: Drawable) = ivIcon.setImageDrawable(drawable)
-
-    fun setCloseIcon(uri: String) {}
-
-    fun setCloseIcon(@DrawableRes resId: Int) = ibClose.setImageResource(resId)
-
-    fun setCloseIcon(bitmap: Bitmap) = ibClose.setImageBitmap(bitmap)
-
-    fun setCloseIcon(drawable: Drawable) = ibClose.setImageDrawable(drawable)
 
     private fun ObjectAnimator.animOptional(duration: Long = 600, delay: Long = 0) = apply {
         interpolator = animInterpolator

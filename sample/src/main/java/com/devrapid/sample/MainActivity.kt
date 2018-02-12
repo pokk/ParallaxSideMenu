@@ -10,6 +10,7 @@ import com.devrapid.kotlinknifer.getResColor
 import com.devrapid.parallaxsidemenu.ParallaxMenu
 import com.devrapid.parallaxsidemenu.R
 import kotlinx.android.synthetic.main.activity_main.ib_menu
+import org.jetbrains.anko.textColor
 
 class MainActivity : AppCompatActivity() {
     private val menu by lazy { ParallaxMenu(this) }
@@ -46,14 +47,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         menu.apply {
+            nameTextView.apply {
+                text = "Jieyi Wu"
+                textColor = Color.WHITE
+//                typeface = resources.getFont(R.font)
+            }
             bkgDrawableRes = R.drawable.bkg_gradient_1
             attachToActivity(this@MainActivity)
             setOverlapMenuElements(list)
         }
 
-        ib_menu.setOnClickListener {
-            menu.openMenu()
-        }
+        ib_menu.setOnClickListener { menu.openMenu() }
     }
 
     private fun createMenu(block: TextView.() -> Unit) =
@@ -62,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     private fun clickListener(v: View) {
         v as TextView
         list.forEach {
-            v.setTextColor(if (it != v) this@MainActivity.getResColor(R.color.colorText) else Color.WHITE)
+            it.textColor = this@MainActivity.getResColor(if (it != v) R.color.colorText else R.color.colorClickedText)
         }
     }
 }
