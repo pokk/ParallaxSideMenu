@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.devrapid.kotlinknifer.navigationBarHeiht
 
 /**
  * @author  jieyi
@@ -25,7 +24,9 @@ open class ParallaxMain @JvmOverloads constructor(context: Context,
         val width = View.getDefaultSize(0, widthMeasureSpec)
         var height = View.getDefaultSize(0, heightMeasureSpec)
 
-        height -= context.navigationBarHeiht()
+        height -= context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            .takeIf { 0 < it }
+            ?.let { resources.getDimensionPixelSize(it) } ?: 0
 
         setMeasuredDimension(width, height)
 

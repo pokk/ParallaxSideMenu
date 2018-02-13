@@ -28,4 +28,4 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
-//apply from: 'https://raw.githubusercontent.com/pokk/JCenterUploader/master/Uploader.gradle'
+apply from: 'https://raw.githubusercontent.com/pokk/JCenterUploader/master/Uploader.gradle'

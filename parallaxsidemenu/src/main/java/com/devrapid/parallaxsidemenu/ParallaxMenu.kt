@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.devrapid.kotlinknifer.animatorListener
-import com.devrapid.kotlinknifer.isNotNull
 import kotlinx.android.synthetic.main.menu_left_side.view.ib_close
 import kotlinx.android.synthetic.main.menu_left_side.view.iv_icon
 import kotlinx.android.synthetic.main.menu_left_side.view.ll_menu
@@ -66,7 +64,15 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
                              .animOptional(animDuration),
                          ObjectAnimator.ofFloat(this@ParallaxMenu, "alpha", 0f, 1f)
                              .animOptional(menuAlphaDuration, menuAlphaDelay))
-            addListener(animatorListener { onAnimationEnd { this@ParallaxMenu.apply { x = 0.toFloat() } } })
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    this@ParallaxMenu.apply { x = 0.toFloat() }
+                }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+            })
         }
     }
     private val closeMenuAnim by lazy {
@@ -75,20 +81,32 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
                              .animOptional(animDuration),
                          ObjectAnimator.ofFloat(this@ParallaxMenu, "alpha", 1f, 0f)
                              .animOptional(animDuration))
-            addListener(animatorListener { onAnimationEnd { x = (-measuredWidth).toFloat() } })
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    x = (-measuredWidth).toFloat()
+                }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+            })
         }
     }
     private val openActivityAnim by lazy {
         AnimatorSet().apply {
             playTogether(ObjectAnimator.ofFloat(mainView, "translationX", 0f, mainView.measuredWidth * shiftX),
                          ObjectAnimator.ofFloat(mainView, "translationY", 0f, mainView.measuredHeight * shiftY))
-            addListener(animatorListener {
-                onAnimationEnd {
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
                     mainView.apply {
                         x = mainView.measuredWidth * shiftX
                         y = mainView.measuredHeight * shiftY
                     }
                 }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
             })
         }.animOptional(animDuration)
     }
@@ -96,26 +114,46 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
         AnimatorSet().apply {
             playTogether(ObjectAnimator.ofFloat(mainView, "translationX", mainView.measuredWidth * shiftX, 0f),
                          ObjectAnimator.ofFloat(mainView, "translationY", mainView.measuredHeight * shiftY, 0f))
-            addListener(animatorListener {
-                onAnimationEnd {
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
                     mainView.apply {
                         x = 0f
                         y = 0f
                     }
                 }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
             })
         }.animOptional(animDuration)
     }
     private val openMenu by lazy {
         AnimatorSet().apply {
             playTogether(openActivityAnim, openMenuAnim)
-            addListener(animatorListener { onAnimationEnd { isOpenMenu = true } })
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    isOpenMenu = true
+                }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+            })
         }
     }
     private val closeMenu by lazy {
         AnimatorSet().apply {
             playTogether(closeActivityAnim, closeMenuAnim)
-            addListener(animatorListener { onAnimationEnd { isOpenMenu = false } })
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    isOpenMenu = false
+                }
+
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+            })
         }
     }
     private val menuItems by lazy { mutableListOf<SparseArray<Any>>() }
@@ -162,7 +200,7 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
     fun setOverlapMenuElements(list: List<TextView>) {
         list.forEach {
             // Removed itself from the parent group view.
-            if (it.parent.isNotNull()) (it.parent as ViewGroup).removeView(it)
+            if (null != it.parent) (it.parent as ViewGroup).removeView(it)
             rvMenuHolder.addView(it)
         }
     }
@@ -175,12 +213,18 @@ open class ParallaxMenu @JvmOverloads constructor(context: Context,
         if (isOpenMenu) closeMenu.apply {
             // A new listener is for triggering the close menu, and the maximum is two.
             if (null != afterAnimation && 2 > listeners.size) {
-                addListener(animatorListener {
-                    onAnimationStart { afterAnimation(this@ParallaxMenu) }
-                    onAnimationEnd {
+                addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationEnd(animation: Animator?) {
                         // After finishing the animation, reset the listener.
                         removeLastListener()
                     }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        afterAnimation(this@ParallaxMenu)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {}
                 })
             }
         }.start()
