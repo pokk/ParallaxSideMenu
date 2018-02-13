@@ -12,11 +12,18 @@ library is about the menu translation.
 ## Gradle
 
 ```gradle
+implement 'com.devrapid.jieyi:ParallaxSideMenu:0.0.1'
 ```
 
 ## Maven
 
 ```maven
+<dependency>
+  <groupId>com.devrapid.jieyi</groupId>
+  <artifactId>ParallaxSideMenu</artifactId>
+  <version>0.0.1</version>
+  <type>pom</type>
+</dependency>
 ```
 
 # Thank For
