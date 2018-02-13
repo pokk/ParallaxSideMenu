@@ -1,5 +1,8 @@
 # ParallaxSideMenu
 
+[![GitHub release](https://img.shields.io/github/release/pokk/ParallaxSideMenu.svg?style=flat-square)](https://github.com/pokk/ParallaxSideMenu)
+[![license](https://img.shields.io/github/license/pokk/ParallaxSideMenu.svg?style=flat-square)](https://github.com/pokk/ParallaxSideMenu)
+
 The name comes from the original author because the animation's idea is from him. Actually, this
 library is about the menu translation.
 
