@@ -26,6 +26,10 @@ implement 'com.devrapid.jieyi:ParallaxSideMenu:0.0.1'
 </dependency>
 ```
 
+# Feature
+
+- [ ] Add type 1 (Side Menu 1)
+
 # Thank For
 
 This awesome menu comes from
