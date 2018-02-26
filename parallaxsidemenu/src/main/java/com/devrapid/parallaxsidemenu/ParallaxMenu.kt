@@ -23,9 +23,11 @@ import kotlinx.android.synthetic.main.menu_left_side.view.tv_name
  * @author  jieyi
  * @since   02/08/18
  */
-open class ParallaxMenu @JvmOverloads constructor(context: Context,
-                                                  attrs: AttributeSet? = null,
-                                                  defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+open class ParallaxMenu @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
     //region Customize variable
     var menuAlphaDuration = 450L
     var menuAlphaDelay = 150L

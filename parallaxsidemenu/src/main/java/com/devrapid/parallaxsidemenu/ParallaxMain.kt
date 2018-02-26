@@ -9,10 +9,11 @@ import android.view.ViewGroup
  * @author  jieyi
  * @since   02/08/18
  */
-open class ParallaxMain @JvmOverloads constructor(context: Context,
-                                                  attrs: AttributeSet? = null,
-                                                  defStyleAttr: Int = 0) :
-    ViewGroup(context, attrs, defStyleAttr) {
+open class ParallaxMain @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : ViewGroup(context, attrs, defStyleAttr) {
     var realActivity: View? = null
         set(value) {
             if (field != value) removeView(field)
