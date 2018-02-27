@@ -218,14 +218,12 @@ open class ParallaxMenu @JvmOverloads constructor(
                 addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {}
                     override fun onAnimationEnd(animation: Animator?) {
+                        afterAnimation(this@ParallaxMenu)
                         // After finishing the animation, reset the listener.
                         removeLastListener()
                     }
 
-                    override fun onAnimationStart(animation: Animator?) {
-                        afterAnimation(this@ParallaxMenu)
-                    }
-
+                    override fun onAnimationStart(animation: Animator?) {}
                     override fun onAnimationCancel(animation: Animator?) {}
                 })
             }

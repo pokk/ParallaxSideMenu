@@ -17,7 +17,7 @@ library is about the menu translation.
 ## Gradle
 
 ```gradle
-implement 'com.devrapid.jieyi:parallaxsidemenu:0.0.4'
+implement 'com.devrapid.jieyi:parallaxsidemenu:0.0.5'
 ```
 
 ## Maven
@@ -26,7 +26,7 @@ implement 'com.devrapid.jieyi:parallaxsidemenu:0.0.4'
 <dependency>
   <groupId>com.devrapid.jieyi</groupId>
   <artifactId>parallaxsidemenu</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <type>pom</type>
 </dependency>
 ```
