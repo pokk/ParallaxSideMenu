@@ -232,6 +232,16 @@ open class ParallaxMenu @JvmOverloads constructor(
         }.start()
     }
 
+    fun hideMenuItem(index: Int) {
+        if (index !in 0..rvMenuHolder.childCount) throw IndexOutOfBoundsException()
+        rvMenuHolder.getChildAt(index).visibility = View.GONE
+    }
+
+    fun showMenuItem(index: Int) {
+        if (index !in 0..rvMenuHolder.childCount) throw IndexOutOfBoundsException()
+        rvMenuHolder.getChildAt(index).visibility = View.VISIBLE
+    }
+
     private fun ObjectAnimator.animOptional(duration: Long = 600, delay: Long = 0) = apply {
         interpolator = animInterpolator
         startDelay = delay

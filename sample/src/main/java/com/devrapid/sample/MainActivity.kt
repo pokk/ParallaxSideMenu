@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             bkgDrawableRes = R.drawable.bkg_gradient_1
             attachToActivity(this@MainActivity)
             setOverlapMenuElements(list)
+            hideMenuItem(3)
         }
 
         ib_menu.setOnClickListener { menu.openMenu() }
