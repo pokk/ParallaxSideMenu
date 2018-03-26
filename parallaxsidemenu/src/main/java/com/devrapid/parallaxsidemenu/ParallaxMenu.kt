@@ -72,7 +72,9 @@ open class ParallaxMenu @JvmOverloads constructor(
                     this@ParallaxMenu.apply { x = 0.toFloat() }
                 }
 
-                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator?) {
+                    (mainView as ParallaxMain).touchDisable = true
+                }
                 override fun onAnimationCancel(animation: Animator?) {}
             })
         }
@@ -87,6 +89,7 @@ open class ParallaxMenu @JvmOverloads constructor(
                 override fun onAnimationRepeat(animation: Animator?) {}
                 override fun onAnimationEnd(animation: Animator?) {
                     x = (-measuredWidth).toFloat()
+                    (mainView as ParallaxMain).touchDisable = false
                 }
 
                 override fun onAnimationStart(animation: Animator?) {}

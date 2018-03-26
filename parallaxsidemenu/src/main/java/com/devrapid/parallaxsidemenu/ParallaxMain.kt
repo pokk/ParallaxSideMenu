@@ -2,6 +2,7 @@ package com.devrapid.parallaxsidemenu
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 
@@ -14,6 +15,8 @@ open class ParallaxMain @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
+    var touchDisable = false
+
     var realActivity: View? = null
         set(value) {
             if (field != value) removeView(field)
@@ -41,4 +44,8 @@ open class ParallaxMain @JvmOverloads constructor(
         val height = b - t
         realActivity?.layout(0, 0, width, height)
     }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?) = touchDisable
+
+    fun isTouchDisabled() = touchDisable
 }
